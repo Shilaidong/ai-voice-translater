@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Voice Translater</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">AV</span>
+          <div>
+            <h1>AI Voice Translater</h1>
+            <p id="runtimeText">本地视频翻译处理</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span class="status-pill" id="healthPill">检查中</span>
+          <button class="ghost-button" id="refreshButton" type="button" title="刷新任务">刷新</button>
+          <a class="ghost-button" href="/docs" target="_blank" rel="noreferrer">API</a>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <section class="submit-panel" aria-labelledby="submitTitle">
+          <div class="panel-kicker">Input</div>
+          <div class="section-heading">
+            <h2 id="submitTitle">新任务</h2>
+            <span class="muted">上传或引用本地视频/音频</span>
+          </div>
+
+          <form id="uploadForm" class="stack">
+            <label class="file-drop" for="fileInput">
+              <input id="fileInput" name="file" type="file" accept="video/*,audio/*,.mp4,.mkv,.mov,.wav,.mp3,.m4a" />
+              <span class="file-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22">
+                  <path d="M12 3v11m0-11 4 4m-4-4-4 4M5 14v4c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span class="file-title" id="fileLabel">选择视频或音频</span>
+              <span class="file-meta">mp4, mov, mkv, wav, mp3, m4a</span>
+            </label>
+            <button class="primary-button" type="submit">上传并生成翻译视频</button>
+          </form>
+
+          <div class="divider"><span>或使用绝对路径</span></div>
+
+          <form id="pathForm" class="path-form">
+            <label for="pathInput">本地路径</label>
+            <div class="inline-controls">
+              <input id="pathInput" type="text" placeholder="C:\path\to\video.mp4" />
+              <button class="secondary-button" type="submit">处理</button>
+            </div>
+          </form>
+
+          <div class="settings-block">
+            <div class="panel-kicker">Runtime</div>
+            <div class="config-grid" id="configGrid"></div>
+          </div>
+        </section>
+
+        <section class="jobs-panel" aria-labelledby="jobsTitle">
+          <div class="panel-kicker">Queue</div>
+          <div class="section-heading">
+            <h2 id="jobsTitle">任务队列</h2>
+            <span id="jobCount" class="count-badge">0</span>
+          </div>
+          <div class="job-list" id="jobList">
+            <div class="empty-state">
+              <strong>暂无任务</strong>
+              <span>提交文件后，处理进度会显示在这里。</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="preview-panel" aria-labelledby="previewTitle">
+          <div class="preview-header">
+            <div>
+              <div class="panel-kicker">Output</div>
+              <h2 id="previewTitle">结果预览</h2>
+              <p id="selectedJobLabel">未选择任务</p>
+            </div>
+            <div class="output-actions" id="outputActions"></div>
+          </div>
+
+          <div class="tabs" role="tablist" aria-label="结果视图">
+            <button class="tab active" type="button" data-tab="subtitle">字幕</button>
+            <button class="tab" type="button" data-tab="log">日志</button>
+          </div>
+
+          <pre class="preview active" id="subtitlePreview">选择一个已完成任务查看字幕。</pre>
+          <pre class="preview" id="logPreview">选择任务查看日志。</pre>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

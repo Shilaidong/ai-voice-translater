@@ -1,0 +1,13 @@
+1
+00:00:00,000 --> 00:00:04,000
+[zho_Hans] This is a
+placeholder
+transcription for audio.
+
+2
+00:00:04,000 --> 00:00:08,000
+[zho_Hans] Replace the
+mock backend with
+WhisperX or
+faster-whisper for real
+output.

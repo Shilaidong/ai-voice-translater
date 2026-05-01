@@ -1,0 +1,550 @@
+:root {
+  color-scheme: light;
+  --bg: oklch(0.965 0.009 96);
+  --surface: oklch(0.988 0.006 96);
+  --surface-raised: oklch(0.998 0.004 96);
+  --surface-muted: oklch(0.935 0.012 96);
+  --ink: oklch(0.235 0.018 73);
+  --ink-soft: oklch(0.48 0.023 73);
+  --ink-faint: oklch(0.62 0.018 73);
+  --line: oklch(0.86 0.015 88);
+  --line-strong: oklch(0.74 0.022 88);
+  --accent: oklch(0.48 0.105 187);
+  --accent-hover: oklch(0.42 0.115 187);
+  --accent-soft: oklch(0.92 0.035 187);
+  --success: oklch(0.50 0.105 152);
+  --warning: oklch(0.62 0.13 78);
+  --danger: oklch(0.54 0.15 31);
+  --focus: oklch(0.76 0.085 187);
+  --shadow: 0 18px 44px oklch(0.30 0.03 73 / 0.08);
+  font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+  background:
+    linear-gradient(180deg, oklch(0.985 0.008 96), var(--bg) 320px),
+    var(--bg);
+  color: var(--ink);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a {
+  transition: background-color 160ms ease-out, border-color 160ms ease-out, color 160ms ease-out, box-shadow 160ms ease-out;
+}
+
+.app-shell {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  flex: 0 0 auto;
+  min-height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--line);
+  background: oklch(0.99 0.006 96 / 0.96);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.brand,
+.topbar-actions,
+.inline-controls,
+.output-actions,
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.brand-mark {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 13px;
+  font-weight: 750;
+  letter-spacing: 0;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 16px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.topbar p,
+.muted,
+#selectedJobLabel {
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(300px, 372px) minmax(286px, 390px) minmax(420px, 1fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.submit-panel,
+.jobs-panel,
+.preview-panel {
+  min-height: 0;
+  padding: 22px;
+  overflow: auto;
+}
+
+.submit-panel,
+.jobs-panel {
+  border-right: 1px solid var(--line);
+}
+
+.submit-panel {
+  background: oklch(0.976 0.008 96);
+}
+
+.jobs-panel {
+  background: var(--surface);
+}
+
+.preview-panel {
+  background: oklch(0.969 0.008 96);
+}
+
+.panel-kicker {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+
+.section-heading,
+.preview-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 17px;
+}
+
+.stack {
+  display: grid;
+  gap: 12px;
+}
+
+.file-drop {
+  min-height: 158px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  padding: 22px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  cursor: pointer;
+  text-align: center;
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.4);
+}
+
+.file-drop:hover {
+  border-color: var(--accent);
+  background: oklch(0.976 0.015 187);
+}
+
+.file-drop input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.file-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.file-title {
+  font-weight: 680;
+}
+
+.file-meta {
+  color: var(--ink-soft);
+  font-size: 12px;
+}
+
+.primary-button,
+.secondary-button,
+.ghost-button,
+.download-link,
+.tab {
+  min-height: 34px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  padding: 0 12px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.primary-button {
+  width: 100%;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: oklch(0.985 0.006 187);
+  font-weight: 680;
+  box-shadow: 0 8px 18px oklch(0.48 0.105 187 / 0.18);
+}
+
+.primary-button:hover {
+  border-color: var(--accent-hover);
+  background: var(--accent-hover);
+}
+
+.secondary-button,
+.ghost-button,
+.download-link,
+.tab {
+  background: var(--surface-raised);
+  color: var(--ink);
+}
+
+.secondary-button:hover,
+.ghost-button:hover,
+.download-link:hover,
+.tab:hover {
+  border-color: var(--line-strong);
+  background: var(--surface-muted);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+.file-drop:focus-within {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+  color: var(--ink-faint);
+  font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: var(--line);
+}
+
+.path-form {
+  display: grid;
+  gap: 8px;
+}
+
+.path-form label {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.inline-controls input {
+  min-width: 0;
+  flex: 1;
+  min-height: 36px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  padding: 0 10px;
+  background: var(--surface-raised);
+  color: var(--ink);
+}
+
+.settings-block {
+  margin-top: 24px;
+}
+
+.config-grid {
+  display: grid;
+  border-top: 1px solid var(--line);
+}
+
+.config-item {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.config-item span:first-child {
+  color: var(--ink-soft);
+}
+
+.config-item span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+
+.status-pill,
+.count-badge {
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: var(--surface-muted);
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.status-pill.ok,
+.job-status.succeeded {
+  color: var(--success);
+}
+
+.status-pill.error,
+.job-status.failed {
+  color: var(--danger);
+}
+
+.job-list {
+  display: grid;
+  gap: 9px;
+}
+
+.job-item {
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: var(--surface-raised);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.job-item:hover {
+  border-color: var(--line-strong);
+  box-shadow: 0 8px 20px oklch(0.3 0.03 73 / 0.06);
+}
+
+.job-item.active {
+  border-color: var(--accent);
+  background: oklch(0.982 0.012 187);
+}
+
+.job-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 680;
+}
+
+.job-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.job-path {
+  display: block;
+  color: var(--ink-soft);
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.job-status {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--warning);
+}
+
+.empty-state {
+  display: grid;
+  gap: 6px;
+  padding: 24px 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.empty-state strong {
+  color: var(--ink);
+}
+
+.preview-header {
+  align-items: center;
+}
+
+.output-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.download-link {
+  min-height: 32px;
+  font-size: 13px;
+}
+
+.tabs {
+  margin-bottom: 12px;
+}
+
+.tab {
+  min-height: 32px;
+  font-size: 13px;
+}
+
+.tab.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.preview {
+  display: none;
+  min-height: min(620px, calc(100vh - 190px));
+  margin: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: 13px/1.6 ui-monospace, "Cascadia Mono", Consolas, monospace;
+  box-shadow: var(--shadow);
+}
+
+.preview.active {
+  display: block;
+}
+
+.toast {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  max-width: min(420px, calc(100vw - 36px));
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-raised);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 160ms ease-out, transform 160ms ease-out;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 1120px) {
+  .workspace {
+    grid-template-columns: 330px 1fr;
+  }
+
+  .preview-panel {
+    grid-column: 1 / -1;
+    min-height: auto;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .workspace {
+    overflow: visible;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .workspace {
+    display: block;
+  }
+
+  .submit-panel,
+  .jobs-panel,
+  .preview-panel {
+    min-height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .inline-controls,
+  .preview-header,
+  .topbar-actions {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .output-actions {
+    justify-content: flex-start;
+  }
+}

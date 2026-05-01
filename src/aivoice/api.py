@@ -64,6 +64,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return {
             "asr_backend": settings.asr_backend,
             "asr_model_size": settings.asr_model_size,
+            "alignment_backend": settings.alignment_backend,
+            "alignment_language": settings.alignment_language,
             "job_worker_count": settings.job_worker_count,
             "vad_backend": settings.vad_backend,
             "translator_backend": settings.translator_backend,

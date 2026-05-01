@@ -133,6 +133,9 @@ $env:AIVT_VAD_BACKEND="silero"
 .\.venv\Scripts\aivt.exe smoke-vad C:\path\to\speech.wav
 ```
 
+WhisperX alignment is wired as an optional English-only path. It is off by
+default because Chinese/mixed input needs a different alignment strategy.
+
 On Windows, the current SAPI TTS backend is only a debug fallback. It proves the
 audio timeline and video muxing path, but it is not product-quality dubbing.
 Product dubbing will use a reference-audio TTS route: VoxCPM2 as the primary
@@ -177,6 +180,9 @@ Copy `.env.example` or set variables directly:
 - `AIVT_ASR_MODEL_SIZE`: defaults to `small.en`; use `tiny.en` for smoke tests
 - `AIVT_ASR_DEVICE`: defaults to `cpu`
 - `AIVT_ASR_COMPUTE_TYPE`: defaults to `int8`
+- `AIVT_ALIGNMENT_BACKEND`: `off` or `whisperx`; defaults to `off`
+- `AIVT_ALIGNMENT_LANGUAGE`: alignment language, defaults to `en`
+- `AIVT_ALIGNMENT_DEVICE`: alignment device, defaults to `cpu`
 - `AIVT_VAD_BACKEND`: `off` or `silero`; defaults to `off`
 - `AIVT_VAD_THRESHOLD`: Silero speech threshold, defaults to `0.5`
 - `AIVT_VAD_MIN_SPEECH_MS`: minimum speech duration, defaults to `250`
@@ -221,6 +227,10 @@ $env:AIVT_TRANSLATOR_MODEL="qwen2.5-7b-instruct"
 .\.venv\Scripts\python -m pytest tests\test_real_smoke_optional.py -q
 
 $env:AIVT_SMOKE_VAD_AUDIO="C:\path\to\speech.wav"
+.\.venv\Scripts\python -m pytest tests\test_real_smoke_optional.py -q
+
+$env:AIVT_SMOKE_ALIGN_AUDIO="C:\path\to\english.wav"
+$env:AIVT_SMOKE_ALIGN_TEXT="The encoder maps input embeddings."
 .\.venv\Scripts\python -m pytest tests\test_real_smoke_optional.py -q
 ```
 

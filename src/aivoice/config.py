@@ -18,6 +18,9 @@ class Settings:
     asr_model_size: str
     asr_device: str
     asr_compute_type: str
+    alignment_backend: str
+    alignment_language: str
+    alignment_device: str
     vad_backend: str
     vad_threshold: float
     vad_min_speech_ms: int
@@ -73,6 +76,9 @@ def load_settings() -> Settings:
         asr_model_size=os.getenv("AIVT_ASR_MODEL_SIZE", "small.en"),
         asr_device=os.getenv("AIVT_ASR_DEVICE", "cpu").lower(),
         asr_compute_type=os.getenv("AIVT_ASR_COMPUTE_TYPE", "int8").lower(),
+        alignment_backend=os.getenv("AIVT_ALIGNMENT_BACKEND", "off").lower(),
+        alignment_language=os.getenv("AIVT_ALIGNMENT_LANGUAGE", "en"),
+        alignment_device=os.getenv("AIVT_ALIGNMENT_DEVICE", "cpu").lower(),
         vad_backend=os.getenv("AIVT_VAD_BACKEND", "off").lower(),
         vad_threshold=float(os.getenv("AIVT_VAD_THRESHOLD", "0.5")),
         vad_min_speech_ms=int(os.getenv("AIVT_VAD_MIN_SPEECH_MS", "250")),

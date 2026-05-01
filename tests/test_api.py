@@ -20,6 +20,9 @@ def make_settings(data_dir: Path) -> Settings:
         asr_model_size="tiny.en",
         asr_device="cpu",
         asr_compute_type="int8",
+        alignment_backend="off",
+        alignment_language="en",
+        alignment_device="cpu",
         vad_backend="off",
         vad_threshold=0.5,
         vad_min_speech_ms=250,
@@ -80,6 +83,7 @@ def test_gui_root_and_runtime(tmp_path: Path) -> None:
 
     runtime = client.get("/runtime").json()
     assert runtime["asr_backend"] == "mock"
+    assert runtime["alignment_backend"] == "off"
     assert runtime["job_worker_count"] == 1
     assert runtime["vad_backend"] == "off"
     assert runtime["tts_backend"] == "mock"

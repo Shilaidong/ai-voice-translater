@@ -22,6 +22,7 @@ Implemented:
 - Outputs: `audio.wav`, `source.srt`, `zh.srt`, `bilingual.vtt`,
   `translated.mkv`, `dubbed.wav`, `dubbed.mkv`.
 - ASR backend: `mock`, `faster-whisper`.
+- Alignment backend: `off`, English-only `whisperx` optional path.
 - Translation backend: `mock`, NLLB.
 - OpenAI-compatible LLM translation backend with context, glossary, duration
   budget, JSON candidates, and duration-aware candidate selection.
@@ -62,7 +63,8 @@ Goal: make the subtitle and artifact pipeline stable enough for future dubbing.
 Required work:
 
 - Enable Silero VAD in real smoke runs and tune thresholds.
-- Add WhisperX forced alignment for English-source videos only.
+- WhisperX forced alignment for English-source videos is wired as an optional
+  backend; real smoke and threshold tuning remain.
 - For Chinese or mixed-language source, fall back to Whisper word timestamps or
   MFA rather than forcing the default WhisperX wav2vec2 path.
 - Extend cue schema now. Implemented fields:
@@ -334,6 +336,8 @@ Additional required suites:
 - Optional LLM endpoint smoke: set `AIVT_SMOKE_LLM=1` and point
   `AIVT_TRANSLATOR_API_BASE` at the local OpenAI-compatible server.
 - Optional Silero VAD smoke: set `AIVT_SMOKE_VAD_AUDIO` to a real speech WAV.
+- Optional WhisperX alignment smoke: set `AIVT_SMOKE_ALIGN_AUDIO` and
+  `AIVT_SMOKE_ALIGN_TEXT` for a real English speech WAV.
 - ASR WER smoke test: fixed known English fixture, WER target under 5% for the
   selected real model.
 - API security test: unknown output names and path traversal attempts return

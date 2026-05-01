@@ -7,7 +7,8 @@ import uuid
 from dataclasses import asdict
 from pathlib import Path
 
-from .backends import create_asr_backend, create_translator, create_tts_backend, create_vad_backend
+from .alignment import AlignmentBackend
+from .backends import create_alignment_backend, create_asr_backend, create_translator, create_tts_backend, create_vad_backend
 from .config import Settings
 from .dubbing import synthesize_dubbed_audio
 from .logging_config import get_job_logger
@@ -31,6 +32,7 @@ class OfflinePipeline:
     def __init__(self, settings: Settings, store: JobStore) -> None:
         self.settings = settings
         self.store = store
+        self._alignment: AlignmentBackend | None = None
         self._asr: AsrBackend | None = None
         self._translator: Translator | None = None
         self._glossary: list[GlossaryTerm] | None = None
@@ -76,6 +78,7 @@ class OfflinePipeline:
             self._extract_audio(resolved_video, audio_path, job_logger)
 
             segments = self._transcribe_with_vad(audio_path, job_dir, job_logger)
+            segments = self._align_segments(audio_path, segments, job_logger)
 
             stage_started = time.perf_counter()
             translation_requests = self._translation_requests(segments)
@@ -186,6 +189,12 @@ class OfflinePipeline:
         if self._asr is None:
             self._asr = create_asr_backend(self.settings)
         return self._asr
+
+    @property
+    def alignment(self) -> AlignmentBackend:
+        if self._alignment is None:
+            self._alignment = create_alignment_backend(self.settings)
+        return self._alignment
 
     @property
     def translator(self) -> Translator:
@@ -309,6 +318,8 @@ class OfflinePipeline:
         return {
             "asr_backend": self.settings.asr_backend,
             "asr_model_size": self.settings.asr_model_size,
+            "alignment_backend": self.settings.alignment_backend,
+            "alignment_language": self.settings.alignment_language,
             "translator_backend": self.settings.translator_backend,
             "translator_model": self.settings.translator_model,
             "translator_api_base": self.settings.translator_api_base if self.settings.translator_backend == "llm" else "",
@@ -331,6 +342,25 @@ class OfflinePipeline:
                 )
             )
         return requests
+
+    def _align_segments(
+        self,
+        audio_path: Path,
+        segments: list[Segment],
+        job_logger: logging.LoggerAdapter,
+    ) -> list[Segment]:
+        stage_started = time.perf_counter()
+        aligned = self.alignment.align(audio_path, segments)
+        job_logger.info(
+            "alignment completed",
+            extra={
+                "stage": "alignment",
+                "duration_ms": int((time.perf_counter() - stage_started) * 1000),
+                "segment_count": len(aligned),
+                "word_count": sum(len(segment.words) for segment in aligned),
+            },
+        )
+        return aligned
 
     def _log_quality_warnings(self, cues: list[SubtitleCue], job_logger: logging.LoggerAdapter) -> None:
         for issue in check_reading_speed(cues, self.settings.subtitle_target_max_cps):

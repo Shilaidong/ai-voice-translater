@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from .alignment import AlignmentBackend, NoopAlignmentBackend
 from .config import Settings
 from .asr import AsrBackend, MockAsrBackend
 from .tts import MockTtsBackend, TtsBackend
@@ -24,6 +25,20 @@ def create_asr_backend(settings: Settings) -> AsrBackend:
 
         return WhisperXBackend()
     raise ValueError(f"Unsupported ASR backend: {name}")
+
+
+def create_alignment_backend(settings: Settings) -> AlignmentBackend:
+    name = settings.alignment_backend
+    if name in {"off", "none", "noop", "disabled"}:
+        return NoopAlignmentBackend()
+    if name == "whisperx":
+        from .alignment.whisperx import WhisperXAlignmentBackend
+
+        return WhisperXAlignmentBackend(
+            language_code=settings.alignment_language,
+            device=settings.alignment_device,
+        )
+    raise ValueError(f"Unsupported alignment backend: {name}")
 
 
 def create_translator(settings: Settings) -> Translator:

@@ -20,6 +20,9 @@ def make_settings(data_dir: Path) -> Settings:
         asr_model_size="tiny.en",
         asr_device="cpu",
         asr_compute_type="int8",
+        alignment_backend="off",
+        alignment_language="en",
+        alignment_device="cpu",
         vad_backend="off",
         vad_threshold=0.5,
         vad_min_speech_ms=250,
@@ -102,6 +105,7 @@ def test_pipeline_processes_wav_with_mock_backends(tmp_path: Path) -> None:
     assert Path(job.outputs["bilingual_vtt"]).exists()
     assert "[zho_Hans]" in Path(job.outputs["zh_srt"]).read_text(encoding="utf-8")
     assert job.config_snapshot["vad_backend"] == "off"
+    assert job.model_versions["alignment_backend"] == "off"
     assert job.model_versions["asr_model_size"] == "tiny.en"
     assert job.cues[0]["speaker_id"] is None
     assert job.cues[0]["duration_tolerance"] == 0.08

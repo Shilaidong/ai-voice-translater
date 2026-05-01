@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pytest
 
+from aivoice.alignment.whisperx import WhisperXAlignmentBackend
+from aivoice.models import Segment
 from aivoice.translation import GlossaryTerm, TranslationRequest
 from aivoice.translation.llm_adapter import OpenAICompatibleTranslator
 from aivoice.vad.silero import SileroVadBackend
@@ -51,3 +53,25 @@ def test_optional_silero_vad_smoke() -> None:
 
     assert regions
     assert all(region.end > region.start for region in regions)
+
+
+def test_optional_whisperx_alignment_smoke() -> None:
+    audio_path = os.getenv("AIVT_SMOKE_ALIGN_AUDIO")
+    if not audio_path:
+        pytest.skip("Set AIVT_SMOKE_ALIGN_AUDIO to a real English speech WAV to run WhisperX alignment smoke test.")
+
+    path = Path(audio_path)
+    assert path.exists()
+    aligned = WhisperXAlignmentBackend(language_code="en").align(
+        path,
+        [
+            Segment(
+                start=0.0,
+                end=float(os.getenv("AIVT_SMOKE_ALIGN_DURATION", "5")),
+                text=os.getenv("AIVT_SMOKE_ALIGN_TEXT", "The encoder maps input embeddings."),
+            )
+        ],
+    )
+
+    assert aligned
+    assert aligned[0].words

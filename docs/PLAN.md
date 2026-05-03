@@ -33,7 +33,7 @@ Implemented:
 - Optional VAD layer with `off` and `silero` backends.
 - Audio separation backends: `off` scaffold and optional `demucs`.
 - Cue schema prework: speaker id, source words, confidence, duration budget,
-  duration tolerance.
+  duration tolerance ratio, duration tolerance seconds.
 - Job artifacts store config snapshots and model-version metadata.
 - Output downloads are restricted to a whitelist and job-local files.
 - Subtitle quality checks include translated reading-speed warnings.

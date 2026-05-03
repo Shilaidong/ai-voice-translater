@@ -34,6 +34,7 @@ class SubtitleCue:
     confidence: float | None = None
     duration_budget: float | None = None
     duration_tolerance: float = 0.08
+    duration_tolerance_seconds: float | None = None
 
 
 @dataclass

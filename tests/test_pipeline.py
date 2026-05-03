@@ -118,6 +118,7 @@ def test_pipeline_processes_wav_with_mock_backends(tmp_path: Path) -> None:
     assert job.model_versions["asr_model_size"] == "tiny.en"
     assert job.cues[0]["speaker_id"] is None
     assert job.cues[0]["duration_tolerance"] == 0.08
+    assert job.cues[0]["duration_tolerance_seconds"] == 0.32
     assert store.load(job.id).status == "succeeded"
 
 

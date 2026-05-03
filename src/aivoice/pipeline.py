@@ -24,6 +24,7 @@ from .models import JobRecord, Segment, SubtitleCue, stringify_outputs
 from .quality import check_reading_speed
 from .storage import JobStore
 from .subtitles import write_bilingual_vtt, write_srt
+from .timing import duration_tolerance_seconds
 from .asr import AsrBackend
 from .tts import TtsBackend
 from .translation import GlossaryTerm, TranslationRequest, Translator
@@ -122,6 +123,7 @@ class OfflinePipeline:
                     confidence=segment.confidence,
                     duration_budget=segment.end - segment.start,
                     duration_tolerance=0.08,
+                    duration_tolerance_seconds=duration_tolerance_seconds(segment.end - segment.start),
                 )
                 for index, segment in enumerate(segments)
             ]

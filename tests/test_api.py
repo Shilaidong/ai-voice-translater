@@ -27,6 +27,7 @@ def make_settings(data_dir: Path) -> Settings:
         vad_threshold=0.5,
         vad_min_speech_ms=250,
         vad_min_silence_ms=100,
+        audio_separation_backend="off",
         translator_backend="mock",
         translator_model="facebook/nllb-200-distilled-600M",
         translator_device="cpu",
@@ -86,6 +87,7 @@ def test_gui_root_and_runtime(tmp_path: Path) -> None:
     assert runtime["alignment_backend"] == "off"
     assert runtime["job_worker_count"] == 1
     assert runtime["vad_backend"] == "off"
+    assert runtime["audio_separation_backend"] == "off"
     assert runtime["tts_backend"] == "mock"
     assert runtime["target_lang"] == "zho_Hans"
 
@@ -104,6 +106,7 @@ def test_upload_job_and_download_output(tmp_path: Path) -> None:
     assert job["status"] == "succeeded"
     assert job["config_snapshot"]["asr_backend"] == "mock"
     assert job["model_versions"]["vad_backend"] == "off"
+    assert job["model_versions"]["audio_separation_backend"] == "off"
     assert job["cues"][0]["duration_budget"] > 0
 
     output = client.get(f"/jobs/{job_id}/outputs/bilingual_vtt")
@@ -118,6 +121,9 @@ def test_upload_job_and_download_output(tmp_path: Path) -> None:
 
     dubbed_audio = client.get(f"/jobs/{job_id}/outputs/dubbed_audio")
     assert dubbed_audio.status_code == 200
+
+    background_audio = client.get(f"/jobs/{job_id}/outputs/background_audio")
+    assert background_audio.status_code == 200
 
     logs = client.get(f"/jobs/{job_id}/logs")
     assert logs.status_code == 200

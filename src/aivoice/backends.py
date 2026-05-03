@@ -6,6 +6,7 @@ from .asr import AsrBackend, MockAsrBackend
 from .tts import MockTtsBackend, TtsBackend
 from .translation import MockTranslator, Translator
 from .vad import NoopVadBackend, VadBackend
+from .separation import AudioSeparationBackend, NoopAudioSeparationBackend
 
 
 def create_asr_backend(settings: Settings) -> AsrBackend:
@@ -98,3 +99,10 @@ def create_vad_backend(settings: Settings) -> VadBackend:
             min_silence_ms=settings.vad_min_silence_ms,
         )
     raise ValueError(f"Unsupported VAD backend: {name}")
+
+
+def create_audio_separation_backend(settings: Settings) -> AudioSeparationBackend:
+    name = settings.audio_separation_backend
+    if name in {"off", "none", "noop", "disabled"}:
+        return NoopAudioSeparationBackend()
+    raise ValueError(f"Unsupported audio separation backend: {name}")

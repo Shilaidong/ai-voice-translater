@@ -11,10 +11,11 @@ This repository starts with the v1 offline pipeline:
 3. Run a pluggable ASR backend.
 4. Run a pluggable translation backend.
 5. Write `source.srt`, `zh.srt`, and `bilingual.vtt`.
-6. Synthesize translated speech with a pluggable TTS backend and write `dubbed.wav`.
-7. For video inputs, create `translated.mkv` with the original audio/video plus a Chinese subtitle track.
-8. For video inputs, create `dubbed.mkv` with the original video, Chinese dubbed audio, and Chinese subtitles.
-9. Keep app logs and per-job logs for debugging.
+6. Prepare audio-lane artifacts for future vocal/background separation.
+7. Synthesize translated speech with a pluggable TTS backend and write `dubbed.wav`.
+8. For video inputs, create `translated.mkv` with the original audio/video plus a Chinese subtitle track.
+9. For video inputs, create `dubbed.mkv` with the original video, Chinese dubbed audio, and Chinese subtitles.
+10. Keep app logs and per-job logs for debugging.
 
 The default ASR and translator are mock implementations so the API, job model,
 logging, and subtitle output can be tested before installing large ML models.
@@ -63,7 +64,10 @@ http://127.0.0.1:8765
 The GUI supports uploading video/audio files, submitting an existing local path,
 watching task status, previewing subtitles/logs, and downloading generated
 artifacts. For video inputs, the download list includes subtitle-track video,
-Chinese dubbed audio, and Chinese dubbed video.
+Chinese dubbed audio, Chinese dubbed video, and audio-lane artifacts. With the
+default `AIVT_AUDIO_SEPARATION_BACKEND=off`, the background lane is a silent
+placeholder and the vocals lane is the original extracted speech. Real
+speech-removed background audio will come from the planned Demucs/MDX backend.
 
 Use real ASR on CPU:
 
@@ -187,6 +191,8 @@ Copy `.env.example` or set variables directly:
 - `AIVT_VAD_THRESHOLD`: Silero speech threshold, defaults to `0.5`
 - `AIVT_VAD_MIN_SPEECH_MS`: minimum speech duration, defaults to `250`
 - `AIVT_VAD_MIN_SILENCE_MS`: minimum silence duration, defaults to `100`
+- `AIVT_AUDIO_SEPARATION_BACKEND`: `off` for placeholder lanes; future
+  `demucs`/`mdx` backends will produce real vocal/background separation
 - `AIVT_TRANSLATOR_BACKEND`: `mock`, `nllb`, or `llm`
 - `AIVT_TRANSLATOR_MODEL`: defaults to `facebook/nllb-200-distilled-600M`
 - `AIVT_TRANSLATOR_API_BASE`: OpenAI-compatible `/v1` base URL for `llm`

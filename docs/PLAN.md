@@ -20,7 +20,7 @@ Implemented:
 - API: jobs, uploads, output downloads, job logs, runtime metadata.
 - GUI: local upload/path submission, queue, preview, downloads.
 - Outputs: `audio.wav`, `source.srt`, `zh.srt`, `bilingual.vtt`,
-  `translated.mkv`, `dubbed.wav`, `dubbed.mkv`.
+  `translated.mkv`, `dubbed.wav`, `dubbed.mkv`, plus audio-lane artifacts.
 - ASR backend: `mock`, `faster-whisper`.
 - Alignment backend: `off`, English-only `whisperx` optional path.
 - Translation backend: `mock`, NLLB.
@@ -31,6 +31,8 @@ Implemented:
 - Job-level JSON line logs.
 - Fixed local worker queue with default `AIVT_JOB_WORKER_COUNT=1`.
 - Optional VAD layer with `off` and `silero` backends.
+- Audio separation scaffold with `off` backend: original audio, copied vocals
+  lane, and silent background placeholder.
 - Cue schema prework: speaker id, source words, confidence, duration budget,
   duration tolerance.
 - Job artifacts store config snapshots and model-version metadata.
@@ -76,6 +78,8 @@ Required work:
 - Preserve two audio lanes in artifacts:
   - original audio / source speech retained,
   - speech-removed background lane for future dubbing.
+  Implemented scaffold: `off` creates a vocals copy and silent background
+  placeholder; Demucs/MDX remains the real separation backend.
 - Tune subtitle reading-speed limits and Chinese line-breaking rules against real
   course videos.
 - Keep local API bound to `127.0.0.1` by default; document that `0.0.0.0`

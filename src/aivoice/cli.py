@@ -54,6 +54,7 @@ def doctor() -> int:
         "vad_threshold": settings.vad_threshold,
         "vad_min_speech_ms": settings.vad_min_speech_ms,
         "vad_min_silence_ms": settings.vad_min_silence_ms,
+        "audio_separation_backend": settings.audio_separation_backend,
         "translator_backend": settings.translator_backend,
         "translator_model": settings.translator_model,
         "translator_device": settings.translator_device,

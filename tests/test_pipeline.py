@@ -27,6 +27,7 @@ def make_settings(data_dir: Path) -> Settings:
         vad_threshold=0.5,
         vad_min_speech_ms=250,
         vad_min_silence_ms=100,
+        audio_separation_backend="off",
         translator_backend="mock",
         translator_model="facebook/nllb-200-distilled-600M",
         translator_device="cpu",
@@ -99,13 +100,18 @@ def test_pipeline_processes_wav_with_mock_backends(tmp_path: Path) -> None:
 
     assert job.status == "succeeded"
     assert Path(job.outputs["audio"]).exists()
+    assert Path(job.outputs["original_audio"]).exists()
+    assert Path(job.outputs["vocals_audio"]).exists()
+    assert Path(job.outputs["background_audio"]).exists()
     assert Path(job.outputs["dubbed_audio"]).exists()
     assert Path(job.outputs["source_srt"]).exists()
     assert Path(job.outputs["zh_srt"]).exists()
     assert Path(job.outputs["bilingual_vtt"]).exists()
     assert "[zho_Hans]" in Path(job.outputs["zh_srt"]).read_text(encoding="utf-8")
     assert job.config_snapshot["vad_backend"] == "off"
+    assert job.config_snapshot["audio_separation_backend"] == "off"
     assert job.model_versions["alignment_backend"] == "off"
+    assert job.model_versions["audio_separation_backend"] == "off"
     assert job.model_versions["asr_model_size"] == "tiny.en"
     assert job.cues[0]["speaker_id"] is None
     assert job.cues[0]["duration_tolerance"] == 0.08
@@ -121,6 +127,7 @@ def test_pipeline_processes_video_with_translated_video_output(tmp_path: Path) -
     job = OfflinePipeline(settings, store).process(video_path)
 
     assert job.status == "succeeded"
+    assert Path(job.outputs["background_audio"]).exists()
     assert Path(job.outputs["source_srt"]).exists()
     assert Path(job.outputs["zh_srt"]).exists()
     assert Path(job.outputs["dubbed_audio"]).exists()

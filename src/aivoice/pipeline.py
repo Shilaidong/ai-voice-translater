@@ -8,7 +8,14 @@ from dataclasses import asdict
 from pathlib import Path
 
 from .alignment import AlignmentBackend
-from .backends import create_alignment_backend, create_asr_backend, create_translator, create_tts_backend, create_vad_backend
+from .backends import (
+    create_alignment_backend,
+    create_asr_backend,
+    create_audio_separation_backend,
+    create_translator,
+    create_tts_backend,
+    create_vad_backend,
+)
 from .config import Settings
 from .dubbing import synthesize_dubbed_audio
 from .logging_config import get_job_logger
@@ -23,6 +30,7 @@ from .translation import GlossaryTerm, TranslationRequest, Translator
 from .translation.glossary import load_glossary
 from .translation.postprocess import apply_replacements
 from .vad import SpeechRegion, VadBackend
+from .separation import AudioSeparationBackend, SeparatedAudio
 
 logger = logging.getLogger(__name__)
 DIRECT_AUDIO_SUFFIXES = {".wav"}
@@ -38,6 +46,7 @@ class OfflinePipeline:
         self._glossary: list[GlossaryTerm] | None = None
         self._tts: TtsBackend | None | object = _UNSET
         self._vad: VadBackend | None = None
+        self._audio_separation: AudioSeparationBackend | None = None
 
     def create_job(self, video_path: Path) -> JobRecord:
         job = JobRecord(
@@ -76,6 +85,7 @@ class OfflinePipeline:
             audio_path = job_dir / "audio.wav"
 
             self._extract_audio(resolved_video, audio_path, job_logger)
+            separated_audio = self._separate_audio(audio_path, job_dir, job_logger)
 
             segments = self._transcribe_with_vad(audio_path, job_dir, job_logger)
             segments = self._align_segments(audio_path, segments, job_logger)
@@ -120,6 +130,9 @@ class OfflinePipeline:
 
             outputs = {
                 "audio": audio_path,
+                "original_audio": separated_audio.original_audio,
+                "vocals_audio": separated_audio.vocals_audio,
+                "background_audio": separated_audio.background_audio,
                 "source_srt": job_dir / "source.srt",
                 "zh_srt": job_dir / "zh.srt",
                 "bilingual_vtt": job_dir / "bilingual.vtt",
@@ -220,6 +233,12 @@ class OfflinePipeline:
             self._tts = create_tts_backend(self.settings)
         return None if self._tts is None else self._tts
 
+    @property
+    def audio_separation(self) -> AudioSeparationBackend:
+        if self._audio_separation is None:
+            self._audio_separation = create_audio_separation_backend(self.settings)
+        return self._audio_separation
+
     def _extract_audio(self, video_path: Path, audio_path: Path, job_logger: logging.LoggerAdapter) -> None:
         stage_started = time.perf_counter()
         if video_path.suffix.lower() in DIRECT_AUDIO_SUFFIXES:
@@ -247,6 +266,38 @@ class OfflinePipeline:
                 "output_path": str(audio_path),
             },
         )
+
+    def _separate_audio(
+        self,
+        audio_path: Path,
+        job_dir: Path,
+        job_logger: logging.LoggerAdapter,
+    ) -> SeparatedAudio:
+        stage_started = time.perf_counter()
+        job_logger.info(
+            "preparing audio lanes",
+            extra={
+                "stage": "audio_separation",
+                "backend": self.settings.audio_separation_backend,
+            },
+        )
+        separated = self.audio_separation.separate(
+            audio_path=audio_path,
+            work_dir=job_dir / "audio_lanes",
+            ffmpeg_path=self.settings.ffmpeg_path,
+        )
+        job_logger.info(
+            "audio lanes prepared",
+            extra={
+                "stage": "audio_separation",
+                "duration_ms": int((time.perf_counter() - stage_started) * 1000),
+                "backend": self.settings.audio_separation_backend,
+                "original_audio": str(separated.original_audio),
+                "vocals_audio": str(separated.vocals_audio),
+                "background_audio": str(separated.background_audio),
+            },
+        )
+        return separated
 
     def _transcribe_with_vad(
         self,
@@ -325,6 +376,7 @@ class OfflinePipeline:
             "translator_api_base": self.settings.translator_api_base if self.settings.translator_backend == "llm" else "",
             "tts_backend": self.settings.tts_backend,
             "vad_backend": self.settings.vad_backend,
+            "audio_separation_backend": self.settings.audio_separation_backend,
         }
 
     def _translation_requests(self, segments: list[Segment]) -> list[TranslationRequest]:

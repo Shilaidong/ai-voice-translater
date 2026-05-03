@@ -18,11 +18,14 @@ from .storage import JobStore
 logger = logging.getLogger(__name__)
 ALLOWED_OUTPUT_NAMES = {
     "audio",
+    "background_audio",
     "bilingual_vtt",
     "dubbed_audio",
     "dubbed_video",
+    "original_audio",
     "source_srt",
     "translated_video",
+    "vocals_audio",
     "zh_srt",
 }
 
@@ -68,6 +71,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "alignment_language": settings.alignment_language,
             "job_worker_count": settings.job_worker_count,
             "vad_backend": settings.vad_backend,
+            "audio_separation_backend": settings.audio_separation_backend,
             "translator_backend": settings.translator_backend,
             "translator_model": settings.translator_model,
             "translator_api_base": settings.translator_api_base if settings.translator_backend == "llm" else "",

@@ -71,6 +71,12 @@ class Settings:
 def load_settings() -> Settings:
     root = _project_root()
     data_dir = Path(os.getenv("AIVT_DATA_DIR", root / "data")).expanduser()
+    translator_backend = os.getenv("AIVT_TRANSLATOR_BACKEND", "mock").lower()
+    default_translator_model = (
+        "Qwen/Qwen2.5-1.5B-Instruct"
+        if translator_backend == "qwen"
+        else "facebook/nllb-200-distilled-600M"
+    )
     return Settings(
         data_dir=data_dir,
         log_level=os.getenv("AIVT_LOG_LEVEL", "INFO").upper(),
@@ -89,8 +95,8 @@ def load_settings() -> Settings:
         audio_separation_backend=os.getenv("AIVT_AUDIO_SEPARATION_BACKEND", "off").lower(),
         audio_separation_model=os.getenv("AIVT_AUDIO_SEPARATION_MODEL", "htdemucs_ft"),
         audio_separation_device=os.getenv("AIVT_AUDIO_SEPARATION_DEVICE", "cpu").lower(),
-        translator_backend=os.getenv("AIVT_TRANSLATOR_BACKEND", "mock").lower(),
-        translator_model=os.getenv("AIVT_TRANSLATOR_MODEL", "facebook/nllb-200-distilled-600M"),
+        translator_backend=translator_backend,
+        translator_model=os.getenv("AIVT_TRANSLATOR_MODEL", default_translator_model),
         translator_device=os.getenv("AIVT_TRANSLATOR_DEVICE", "cpu").lower(),
         translator_batch_size=int(os.getenv("AIVT_TRANSLATOR_BATCH_SIZE", "4")),
         translator_max_new_tokens=int(os.getenv("AIVT_TRANSLATOR_MAX_NEW_TOKENS", "160")),

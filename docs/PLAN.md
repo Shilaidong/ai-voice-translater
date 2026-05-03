@@ -23,9 +23,10 @@ Implemented:
   `translated.mkv`, `dubbed.wav`, `dubbed.mkv`, plus audio-lane artifacts.
 - ASR backend: `mock`, `faster-whisper`.
 - Alignment backend: `off`, English-only `whisperx` optional path.
-- Translation backend: `mock`, NLLB.
-- OpenAI-compatible LLM translation backend with context, glossary, duration
-  budget, JSON candidates, and duration-aware candidate selection.
+- Translation backend: `mock`, local Qwen, NLLB.
+- Local Qwen and OpenAI-compatible LLM translation backends with context,
+  glossary, duration budget, JSON candidates, and duration-aware candidate
+  selection.
 - TTS backend: `mock`, Windows SAPI debug fallback.
 - ffmpeg fallback through `imageio-ffmpeg`.
 - Job-level JSON line logs.
@@ -93,7 +94,8 @@ subtitles and dubbed audio.
 
 Planned backend:
 
-- Implemented integration path: OpenAI-compatible `/v1/chat/completions`.
+- Implemented integration paths: local Qwen through Transformers and
+  OpenAI-compatible `/v1/chat/completions`.
 - Target model: Qwen2.5/3 or DeepSeek distill local backend, preferably
   OpenVINO INT4 or a local server exposing an OpenAI-compatible API.
 - Keep NLLB as a fallback.

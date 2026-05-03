@@ -107,9 +107,9 @@ def _package_version(name: str) -> str:
 
 def smoke_llm(text: str, duration: float) -> int:
     settings = load_settings()
-    if settings.translator_backend != "llm":
+    if settings.translator_backend not in {"llm", "qwen"}:
         print(
-            "Set AIVT_TRANSLATOR_BACKEND=llm before running smoke-llm.",
+            "Set AIVT_TRANSLATOR_BACKEND=llm or qwen before running smoke-llm.",
             file=sys.stderr,
         )
         return 2

@@ -93,7 +93,26 @@ aivt process C:\path\to\speech.wav
 The first NLLB run downloads a large model from Hugging Face and is much slower
 than later cached runs.
 
-Use an OpenAI-compatible local LLM endpoint for contextual translation:
+Use local Qwen translation without a separate server:
+
+```powershell
+$env:AIVT_TRANSLATOR_BACKEND="qwen"
+$env:AIVT_TRANSLATOR_MODEL="Qwen/Qwen2.5-1.5B-Instruct"
+$env:AIVT_TRANSLATOR_DEVICE="cpu"
+.\.venv\Scripts\aivt.exe smoke-llm --text "The encoder maps input embeddings." --duration 3
+```
+
+For this AMD Ryzen 5 PRO 6650U machine, `Qwen2.5-1.5B-Instruct` is the current
+quality/speed default. If you need a smaller fallback, use
+`Qwen/Qwen2.5-0.5B-Instruct`, but translation quality is noticeably weaker.
+
+Start the GUI with local Qwen defaults:
+
+```powershell
+.\scripts\start_gui_qwen.ps1
+```
+
+Use an OpenAI-compatible local LLM endpoint instead:
 
 ```powershell
 $env:AIVT_ASR_BACKEND="faster-whisper"
@@ -209,8 +228,9 @@ Copy `.env.example` or set variables directly:
 - `AIVT_AUDIO_SEPARATION_BACKEND`: `off` for placeholder lanes or `demucs`
 - `AIVT_AUDIO_SEPARATION_MODEL`: Demucs model name, defaults to `htdemucs_ft`
 - `AIVT_AUDIO_SEPARATION_DEVICE`: Demucs device, defaults to `cpu`
-- `AIVT_TRANSLATOR_BACKEND`: `mock`, `nllb`, or `llm`
-- `AIVT_TRANSLATOR_MODEL`: defaults to `facebook/nllb-200-distilled-600M`
+- `AIVT_TRANSLATOR_BACKEND`: `mock`, `qwen`, `nllb`, or `llm`
+- `AIVT_TRANSLATOR_MODEL`: defaults to `Qwen/Qwen2.5-1.5B-Instruct` when
+  `AIVT_TRANSLATOR_BACKEND=qwen`
 - `AIVT_TRANSLATOR_API_BASE`: OpenAI-compatible `/v1` base URL for `llm`
 - `AIVT_TRANSLATOR_API_KEY`: optional API key for `llm`
 - `AIVT_TRANSLATOR_TIMEOUT_SECONDS`: request timeout for `llm`, defaults to `120`

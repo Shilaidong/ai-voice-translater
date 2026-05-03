@@ -66,6 +66,15 @@ def create_translator(settings: Settings) -> Translator:
             timeout_seconds=settings.translator_timeout_seconds,
             candidate_count=settings.translator_candidate_count,
         )
+    if name == "qwen":
+        from .translation.qwen_adapter import LocalQwenTranslator
+
+        return LocalQwenTranslator(
+            model_name=settings.translator_model,
+            device=settings.translator_device,
+            max_new_tokens=settings.translator_max_new_tokens,
+            candidate_count=settings.translator_candidate_count,
+        )
     raise ValueError(f"Unsupported translator backend: {name}")
 
 

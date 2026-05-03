@@ -42,6 +42,10 @@ def make_settings(data_dir: Path) -> Settings:
         glossary_path=None,
         tts_backend="mock",
         tts_voice="Chinese",
+        tts_model="voxcpm2",
+        tts_api_base="http://127.0.0.1:8000/v1",
+        tts_api_key="",
+        tts_timeout_seconds=10,
         tts_rate=0,
         tts_volume=100,
         translation_replacements=(),
@@ -93,6 +97,7 @@ def test_gui_root_and_runtime(tmp_path: Path) -> None:
     assert runtime["audio_separation_model"] == "htdemucs_ft"
     assert runtime["audio_separation_device"] == "cpu"
     assert runtime["tts_backend"] == "mock"
+    assert runtime["tts_model"] == "voxcpm2"
     assert runtime["target_lang"] == "zho_Hans"
 
 

@@ -81,6 +81,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "glossary_path": str(settings.glossary_path) if settings.glossary_path else "",
             "tts_backend": settings.tts_backend,
             "tts_voice": settings.tts_voice,
+            "tts_model": settings.tts_model,
+            "tts_api_base": settings.tts_api_base if settings.tts_backend in {"openai-speech", "openai_speech", "voxcpm2"} else "",
             "source_lang": settings.source_lang,
             "target_lang": settings.target_lang,
             "subtitle_source_max_chars": settings.subtitle_source_max_chars,

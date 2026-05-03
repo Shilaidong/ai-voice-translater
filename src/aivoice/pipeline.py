@@ -160,7 +160,7 @@ class OfflinePipeline:
 
             if self.tts is not None:
                 outputs["dubbed_audio"] = job_dir / "dubbed.wav"
-                self._synthesize_dubbing(cues, job_dir, outputs["dubbed_audio"], job_logger)
+                self._synthesize_dubbing(cues, audio_path, job_dir, outputs["dubbed_audio"], job_logger)
 
             if is_video_file(resolved_video):
                 outputs["translated_video"] = job_dir / "translated.mkv"
@@ -459,6 +459,7 @@ class OfflinePipeline:
     def _synthesize_dubbing(
         self,
         cues: list[SubtitleCue],
+        audio_path: Path,
         job_dir: Path,
         output_path: Path,
         job_logger: logging.LoggerAdapter,
@@ -473,6 +474,7 @@ class OfflinePipeline:
             work_dir=job_dir,
             output_path=output_path,
             ffmpeg_path=self.settings.ffmpeg_path,
+            source_audio_path=audio_path,
         )
         job_logger.info(
             "translated speech synthesized",

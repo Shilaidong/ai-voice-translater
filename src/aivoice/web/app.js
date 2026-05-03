@@ -69,7 +69,7 @@ async function loadRuntime() {
     ["ASR", `${runtime.asr_backend} / ${runtime.asr_model_size}`],
     ["翻译", runtime.translator_backend],
     ["模型", runtime.translator_model],
-    ["配音", `${runtime.tts_backend} / ${runtime.tts_voice}`],
+    ["配音", `${runtime.tts_backend} / ${runtime.tts_model || runtime.tts_voice}`],
     ["语言", `${runtime.source_lang} -> ${runtime.target_lang}`],
     ["行宽", `${runtime.subtitle_source_max_chars} / ${runtime.subtitle_target_max_chars}`],
   ]

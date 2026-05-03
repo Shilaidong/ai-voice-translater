@@ -92,6 +92,16 @@ def create_tts_backend(settings: Settings) -> TtsBackend | None:
             rate=settings.tts_rate,
             volume=settings.tts_volume,
         )
+    if name in {"openai-speech", "openai_speech", "voxcpm2"}:
+        from .tts.openai_speech import OpenAICompatibleSpeechTtsBackend
+
+        return OpenAICompatibleSpeechTtsBackend(
+            api_base=settings.tts_api_base,
+            api_key=settings.tts_api_key,
+            model=settings.tts_model,
+            voice=settings.tts_voice,
+            timeout_seconds=settings.tts_timeout_seconds,
+        )
     raise ValueError(f"Unsupported TTS backend: {name}")
 
 

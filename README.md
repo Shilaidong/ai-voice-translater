@@ -176,9 +176,21 @@ default because Chinese/mixed input needs a different alignment strategy.
 
 On Windows, the current SAPI TTS backend is only a debug fallback. It proves the
 audio timeline and video muxing path, but it is not product-quality dubbing.
-Product dubbing will use a reference-audio TTS route: VoxCPM2 as the primary
-backend, IndexTTS-2 as the hard-duration fallback, and optional OpenVoice-style
-conversion when speaker similarity needs post-processing.
+Product dubbing should use a reference-audio TTS route. The app now has an
+OpenAI-compatible speech endpoint backend for VoxCPM2-style services:
+
+```powershell
+$env:AIVT_TTS_BACKEND="voxcpm2"
+$env:AIVT_TTS_MODEL="voxcpm2"
+$env:AIVT_TTS_API_BASE="http://127.0.0.1:8000/v1"
+$env:AIVT_TTS_VOICE="default"
+.\.venv\Scripts\aivt.exe process C:\path\to\video.mp4
+```
+
+For each cue, this backend sends translated text, target duration, source
+reference audio, source transcript, and a style hint to `/audio/speech`. The
+service side is still required; SAPI remains the built-in debug fallback.
+IndexTTS-2 remains the planned hard-duration fallback.
 
 Note: `dubbed.mkv` currently replaces the original audio with the Chinese dubbed
 track. With the debug SAPI backend it will sound mechanical. The planned product
@@ -238,6 +250,10 @@ Copy `.env.example` or set variables directly:
 - `AIVT_GLOSSARY_PATH`: optional glossary file; supports `source=target`, TSV, or CSV lines
 - `AIVT_TTS_BACKEND`: `sapi`, `mock`, or `off`; `sapi` is debug-only
 - `AIVT_TTS_VOICE`: voice name hint, defaults to `Chinese`
+- `AIVT_TTS_MODEL`: OpenAI-compatible speech model name, defaults to `voxcpm2`
+- `AIVT_TTS_API_BASE`: OpenAI-compatible `/v1` base URL for `voxcpm2`
+- `AIVT_TTS_API_KEY`: optional API key for `voxcpm2`
+- `AIVT_TTS_TIMEOUT_SECONDS`: request timeout for `voxcpm2`, defaults to `300`
 - `AIVT_TTS_RATE`: Windows SAPI speech rate, defaults to `0`
 - `AIVT_TTS_VOLUME`: Windows SAPI speech volume, defaults to `100`
 - `AIVT_TRANSLATION_REPLACEMENTS`: semicolon-separated post-processing replacements,

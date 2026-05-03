@@ -40,6 +40,10 @@ class Settings:
     glossary_path: Path | None
     tts_backend: str
     tts_voice: str
+    tts_model: str
+    tts_api_base: str
+    tts_api_key: str
+    tts_timeout_seconds: int
     tts_rate: int
     tts_volume: int
     translation_replacements: tuple[tuple[str, str], ...]
@@ -107,6 +111,10 @@ def load_settings() -> Settings:
         glossary_path=_optional_path(os.getenv("AIVT_GLOSSARY_PATH", "")),
         tts_backend=os.getenv("AIVT_TTS_BACKEND", "sapi").lower(),
         tts_voice=os.getenv("AIVT_TTS_VOICE", "Chinese"),
+        tts_model=os.getenv("AIVT_TTS_MODEL", "voxcpm2"),
+        tts_api_base=os.getenv("AIVT_TTS_API_BASE", "http://127.0.0.1:8000/v1"),
+        tts_api_key=os.getenv("AIVT_TTS_API_KEY", ""),
+        tts_timeout_seconds=int(os.getenv("AIVT_TTS_TIMEOUT_SECONDS", "300")),
         tts_rate=int(os.getenv("AIVT_TTS_RATE", "0")),
         tts_volume=int(os.getenv("AIVT_TTS_VOLUME", "100")),
         translation_replacements=parse_replacements(

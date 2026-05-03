@@ -27,7 +27,8 @@ Implemented:
 - Local Qwen and OpenAI-compatible LLM translation backends with context,
   glossary, duration budget, JSON candidates, and duration-aware candidate
   selection.
-- TTS backend: `mock`, Windows SAPI debug fallback.
+- TTS backend: `mock`, Windows SAPI debug fallback, OpenAI-compatible speech
+  endpoint for VoxCPM2-style reference-audio services.
 - ffmpeg fallback through `imageio-ffmpeg`.
 - Job-level JSON line logs.
 - Fixed local worker queue with default `AIVT_JOB_WORKER_COUNT=1`.
@@ -43,6 +44,7 @@ Implemented:
 Known product limits:
 
 - SAPI sounds mechanical and cannot clone source speakers.
+- VoxCPM2-style TTS endpoint is wired, but the external service is not bundled.
 - NLLB lacks course context, glossary control, and duration-budget translation.
 - Current dubbed output replaces original audio and does not remove source speech.
 - Cue schema has speaker fields, but diarization is not implemented yet.
@@ -159,6 +161,13 @@ Design:
 Goal: first product-grade offline Chinese dubbing.
 
 Primary backend: VoxCPM2 via OpenAI-compatible HTTP endpoint.
+
+Integration status:
+
+- Client backend is implemented as `AIVT_TTS_BACKEND=voxcpm2`.
+- Each cue sends translated text, source reference audio, source transcript,
+  target duration, and style hint to `/audio/speech`.
+- Remaining work is packaging or documenting the external VoxCPM2 service.
 
 Why:
 

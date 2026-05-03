@@ -28,6 +28,8 @@ def make_settings(data_dir: Path) -> Settings:
         vad_min_speech_ms=250,
         vad_min_silence_ms=100,
         audio_separation_backend="off",
+        audio_separation_model="htdemucs_ft",
+        audio_separation_device="cpu",
         translator_backend="mock",
         translator_model="facebook/nllb-200-distilled-600M",
         translator_device="cpu",
@@ -88,6 +90,8 @@ def test_gui_root_and_runtime(tmp_path: Path) -> None:
     assert runtime["job_worker_count"] == 1
     assert runtime["vad_backend"] == "off"
     assert runtime["audio_separation_backend"] == "off"
+    assert runtime["audio_separation_model"] == "htdemucs_ft"
+    assert runtime["audio_separation_device"] == "cpu"
     assert runtime["tts_backend"] == "mock"
     assert runtime["target_lang"] == "zho_Hans"
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.metadata
 import importlib.util
 import json
 import sys
@@ -55,6 +56,8 @@ def doctor() -> int:
         "vad_min_speech_ms": settings.vad_min_speech_ms,
         "vad_min_silence_ms": settings.vad_min_silence_ms,
         "audio_separation_backend": settings.audio_separation_backend,
+        "audio_separation_model": settings.audio_separation_model,
+        "audio_separation_device": settings.audio_separation_device,
         "translator_backend": settings.translator_backend,
         "translator_model": settings.translator_model,
         "translator_device": settings.translator_device,
@@ -80,6 +83,10 @@ def doctor() -> int:
             "torch": importlib.util.find_spec("torch") is not None,
             "transformers": importlib.util.find_spec("transformers") is not None,
             "whisperx": importlib.util.find_spec("whisperx") is not None,
+            "demucs": importlib.util.find_spec("demucs") is not None,
+        },
+        "package_versions": {
+            "demucs": _package_version("demucs"),
         },
         "ffmpeg": {
             "ok": ffmpeg.ok,
@@ -89,6 +96,13 @@ def doctor() -> int:
     }
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0 if ffmpeg.ok else 1
+
+
+def _package_version(name: str) -> str:
+    try:
+        return importlib.metadata.version(name)
+    except importlib.metadata.PackageNotFoundError:
+        return ""
 
 
 def smoke_llm(text: str, duration: float) -> int:

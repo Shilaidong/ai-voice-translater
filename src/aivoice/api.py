@@ -72,6 +72,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             "job_worker_count": settings.job_worker_count,
             "vad_backend": settings.vad_backend,
             "audio_separation_backend": settings.audio_separation_backend,
+            "audio_separation_model": settings.audio_separation_model,
+            "audio_separation_device": settings.audio_separation_device,
             "translator_backend": settings.translator_backend,
             "translator_model": settings.translator_model,
             "translator_api_base": settings.translator_api_base if settings.translator_backend == "llm" else "",

@@ -377,6 +377,7 @@ class OfflinePipeline:
             "tts_backend": self.settings.tts_backend,
             "vad_backend": self.settings.vad_backend,
             "audio_separation_backend": self.settings.audio_separation_backend,
+            "audio_separation_model": self.settings.audio_separation_model,
         }
 
     def _translation_requests(self, segments: list[Segment]) -> list[TranslationRequest]:

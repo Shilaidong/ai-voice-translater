@@ -31,8 +31,7 @@ Implemented:
 - Job-level JSON line logs.
 - Fixed local worker queue with default `AIVT_JOB_WORKER_COUNT=1`.
 - Optional VAD layer with `off` and `silero` backends.
-- Audio separation scaffold with `off` backend: original audio, copied vocals
-  lane, and silent background placeholder.
+- Audio separation backends: `off` scaffold and optional `demucs`.
 - Cue schema prework: speaker id, source words, confidence, duration budget,
   duration tolerance.
 - Job artifacts store config snapshots and model-version metadata.
@@ -78,8 +77,8 @@ Required work:
 - Preserve two audio lanes in artifacts:
   - original audio / source speech retained,
   - speech-removed background lane for future dubbing.
-  Implemented scaffold: `off` creates a vocals copy and silent background
-  placeholder; Demucs/MDX remains the real separation backend.
+  Implemented: `off` creates a vocals copy and silent background placeholder;
+  `demucs` can produce real vocals/background artifacts when installed.
 - Tune subtitle reading-speed limits and Chinese line-breaking rules against real
   course videos.
 - Keep local API bound to `127.0.0.1` by default; document that `0.0.0.0`

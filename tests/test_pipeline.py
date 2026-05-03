@@ -28,6 +28,8 @@ def make_settings(data_dir: Path) -> Settings:
         vad_min_speech_ms=250,
         vad_min_silence_ms=100,
         audio_separation_backend="off",
+        audio_separation_model="htdemucs_ft",
+        audio_separation_device="cpu",
         translator_backend="mock",
         translator_model="facebook/nllb-200-distilled-600M",
         translator_device="cpu",
@@ -112,6 +114,7 @@ def test_pipeline_processes_wav_with_mock_backends(tmp_path: Path) -> None:
     assert job.config_snapshot["audio_separation_backend"] == "off"
     assert job.model_versions["alignment_backend"] == "off"
     assert job.model_versions["audio_separation_backend"] == "off"
+    assert job.model_versions["audio_separation_model"] == "htdemucs_ft"
     assert job.model_versions["asr_model_size"] == "tiny.en"
     assert job.cues[0]["speaker_id"] is None
     assert job.cues[0]["duration_tolerance"] == 0.08

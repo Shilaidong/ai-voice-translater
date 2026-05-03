@@ -105,4 +105,11 @@ def create_audio_separation_backend(settings: Settings) -> AudioSeparationBacken
     name = settings.audio_separation_backend
     if name in {"off", "none", "noop", "disabled"}:
         return NoopAudioSeparationBackend()
+    if name == "demucs":
+        from .separation.demucs import DemucsAudioSeparationBackend
+
+        return DemucsAudioSeparationBackend(
+            model_name=settings.audio_separation_model,
+            device=settings.audio_separation_device,
+        )
     raise ValueError(f"Unsupported audio separation backend: {name}")

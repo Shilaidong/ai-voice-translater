@@ -67,7 +67,8 @@ artifacts. For video inputs, the download list includes subtitle-track video,
 Chinese dubbed audio, Chinese dubbed video, and audio-lane artifacts. With the
 default `AIVT_AUDIO_SEPARATION_BACKEND=off`, the background lane is a silent
 placeholder and the vocals lane is the original extracted speech. Real
-speech-removed background audio will come from the planned Demucs/MDX backend.
+speech-removed background audio is available through the optional Demucs backend
+when `demucs` is installed and `AIVT_AUDIO_SEPARATION_BACKEND=demucs`.
 
 Use real ASR on CPU:
 
@@ -137,6 +138,20 @@ $env:AIVT_VAD_BACKEND="silero"
 .\.venv\Scripts\aivt.exe smoke-vad C:\path\to\speech.wav
 ```
 
+Use optional Demucs vocal/background separation:
+
+```powershell
+.\.venv\Scripts\python -m pip install demucs
+$env:AIVT_AUDIO_SEPARATION_BACKEND="demucs"
+$env:AIVT_AUDIO_SEPARATION_MODEL="htdemucs_ft"
+$env:AIVT_AUDIO_SEPARATION_DEVICE="cpu"
+.\.venv\Scripts\aivt.exe process C:\path\to\video.mp4
+```
+
+Demucs is intentionally not a default dependency because it is large and can be
+slow on CPU. The pipeline keeps the same outputs either way:
+`original_audio`, `vocals_audio`, and `background_audio`.
+
 WhisperX alignment is wired as an optional English-only path. It is off by
 default because Chinese/mixed input needs a different alignment strategy.
 
@@ -191,8 +206,9 @@ Copy `.env.example` or set variables directly:
 - `AIVT_VAD_THRESHOLD`: Silero speech threshold, defaults to `0.5`
 - `AIVT_VAD_MIN_SPEECH_MS`: minimum speech duration, defaults to `250`
 - `AIVT_VAD_MIN_SILENCE_MS`: minimum silence duration, defaults to `100`
-- `AIVT_AUDIO_SEPARATION_BACKEND`: `off` for placeholder lanes; future
-  `demucs`/`mdx` backends will produce real vocal/background separation
+- `AIVT_AUDIO_SEPARATION_BACKEND`: `off` for placeholder lanes or `demucs`
+- `AIVT_AUDIO_SEPARATION_MODEL`: Demucs model name, defaults to `htdemucs_ft`
+- `AIVT_AUDIO_SEPARATION_DEVICE`: Demucs device, defaults to `cpu`
 - `AIVT_TRANSLATOR_BACKEND`: `mock`, `nllb`, or `llm`
 - `AIVT_TRANSLATOR_MODEL`: defaults to `facebook/nllb-200-distilled-600M`
 - `AIVT_TRANSLATOR_API_BASE`: OpenAI-compatible `/v1` base URL for `llm`

@@ -129,6 +129,28 @@ def slice_audio(
     return subprocess.run(command, capture_output=True, text=True)
 
 
+def normalize_audio(
+    ffmpeg_path: str,
+    input_path: Path,
+    output_path: Path,
+) -> subprocess.CompletedProcess[str]:
+    ffmpeg = resolve_ffmpeg(ffmpeg_path)
+    command = [
+        ffmpeg,
+        "-y",
+        "-i",
+        str(input_path),
+        "-acodec",
+        "pcm_s16le",
+        "-ar",
+        "16000",
+        "-ac",
+        "1",
+        str(output_path),
+    ]
+    return subprocess.run(command, capture_output=True, text=True)
+
+
 def mux_subtitle_track(
     ffmpeg_path: str,
     video_path: Path,

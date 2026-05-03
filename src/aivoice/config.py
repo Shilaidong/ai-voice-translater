@@ -26,6 +26,8 @@ class Settings:
     vad_min_speech_ms: int
     vad_min_silence_ms: int
     audio_separation_backend: str
+    audio_separation_model: str
+    audio_separation_device: str
     translator_backend: str
     translator_model: str
     translator_device: str
@@ -85,6 +87,8 @@ def load_settings() -> Settings:
         vad_min_speech_ms=int(os.getenv("AIVT_VAD_MIN_SPEECH_MS", "250")),
         vad_min_silence_ms=int(os.getenv("AIVT_VAD_MIN_SILENCE_MS", "100")),
         audio_separation_backend=os.getenv("AIVT_AUDIO_SEPARATION_BACKEND", "off").lower(),
+        audio_separation_model=os.getenv("AIVT_AUDIO_SEPARATION_MODEL", "htdemucs_ft"),
+        audio_separation_device=os.getenv("AIVT_AUDIO_SEPARATION_DEVICE", "cpu").lower(),
         translator_backend=os.getenv("AIVT_TRANSLATOR_BACKEND", "mock").lower(),
         translator_model=os.getenv("AIVT_TRANSLATOR_MODEL", "facebook/nllb-200-distilled-600M"),
         translator_device=os.getenv("AIVT_TRANSLATOR_DEVICE", "cpu").lower(),
